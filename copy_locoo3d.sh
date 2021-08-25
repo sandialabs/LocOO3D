@@ -1,0 +1,1 @@
+../../git/locoo3d/github-builder/copy_locoo3d.sh
