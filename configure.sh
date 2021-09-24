@@ -16,7 +16,6 @@ OJDBC=/Library/Oracle/instantclient_12_2/ojdbc8.jar
 RSTT=/Users/$USER/Documents/RSTT_v3.2.0/lib
 locoo3d_jar=$(pwd)/target/locoo3d-1.9.10-jar-with-dependencies.jar
 
-
 # ---- LocOO3D
 echo "Creating executable script file locoo3d that launches LocOO3D"
 echo "#!/bin/bash" > locoo3d
@@ -29,7 +28,7 @@ echo "# Include java.library.path only if RSTT is specified." >> locoo3d
 echo "#" >> locoo3d
 echo "if [ -z $RSTT ]; then" >> locoo3d
 echo "  java -Xmx1400m -classpath $locoo3d_jar:${OJDBC} gov.sandia.gmp.locoo3d.LocOO  \$*" >> locoo3d
-echo "else " >> locoed
+echo "else" >> locoo3d
 echo "  java -Xmx1400m -Djava.library.path=$RSTT -classpath $locoo3d_jar:${OJDBC} gov.sandia.gmp.locoo3d.LocOO  \$*" >> locoo3d
 echo "fi" >> locoo3d
 chmod 777 locoo3d

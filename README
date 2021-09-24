@@ -16,7 +16,7 @@ LocOO3D is delivered with the following components:
   library in user-developed java applications.  The jar was compiled with 
   java JDK version 10.
 
-- Run-script locoo3d.sh.  User's will likely have to edit some paths defined
+- Run-script configure.sh.  User's will likely have to edit some paths defined
   in the run script to point to correct locations on their systems.
 
 - Run-script support map.sh.  User's will likely have to edit some paths defined
