@@ -43,7 +43,9 @@ import gov.sandia.geotess.AttributeDataDefinitions;
 import gov.sandia.geotess.Data;
 import gov.sandia.gmp.util.globals.GMTFormat;
 import gov.sandia.gmp.util.globals.Globals;
+import gov.sandia.gmp.util.globals.Site;
 import gov.sandia.gmp.util.numerical.vector.EarthShape;
+import gov.sandia.gmp.util.numerical.vector.VectorGeo;
 
 /**
  * Container class for site terms. Presumably by tomographic
@@ -56,6 +58,8 @@ import gov.sandia.gmp.util.numerical.vector.EarthShape;
  */
 public class SiteData
 {
+	protected AttributeDataDefinitions attrDef;
+	
 	/**
 	 * The location of the station to which the site term is applicable.
 	 */
@@ -80,6 +84,25 @@ public class SiteData
 	 * site term in seconds.  Add this to a calculated prediction.
 	 */
 	protected Data   data;
+	
+	protected SiteData(AttributeDataDefinitions attrDef)
+	{
+		String[] names = attrDef.getAttributeNames();
+		String[] units = attrDef.getAttributeUnits();
+		for (int i=0; i<names.length; ++i)
+			if (names[i].equals("PSLOWNESS"))
+			{
+				names[i] = "TT_SITE_CORRECTION_P";
+				units[i] = "seconds";
+			}
+			else if (names[i].equals("SSLOWNESS"))
+			{
+				names[i] = "TT_SITE_CORRECTION_S";
+				units[i] = "seconds";
+			}
+		attrDef.setAttributes(names, units);
+		this.attrDef = attrDef;
+	}
 
 	/**
 	 * Constructor that takes the Site object for which a site term is to be
@@ -113,6 +136,7 @@ public class SiteData
             int onDate, int offDate,
             AttributeDataDefinitions attrDef) throws IOException
     {
+    	this(attrDef);
         stationLocation = siteUnitVector.clone();
         stationRadius   = siteRadius;
         this.onDate = onDate;
@@ -139,6 +163,7 @@ public class SiteData
             double onTime, double offTime,
             AttributeDataDefinitions attrDef) throws IOException
     {
+    	this(attrDef);
         stationLocation = siteUnitVector.clone();
         stationRadius   = siteRadius;
         this.onDate = GMTFormat.getJDate(onTime);
@@ -162,6 +187,7 @@ public class SiteData
 			AttributeDataDefinitions attrDef, int formatVersion)
 					throws IOException 
 	{
+		this(attrDef);
 		// get lateral unit vector position and radius of the site term. The site
 		// radius is stored as an elevation. The latitude and longitude or stored
 		//in degrees.
@@ -202,6 +228,7 @@ public class SiteData
             AttributeDataDefinitions attrDef, int formatVersion)
                     throws IOException 
     {
+    	this(attrDef);
         // get lateral unit vector position and radius of the site term. The site
         // radius is stored as an elevation. The latitude and longitude or stored
         //in degrees.
@@ -244,6 +271,7 @@ public class SiteData
             AttributeDataDefinitions attrDef)
                     throws IOException 
     {
+    	this(attrDef);
         // get lateral unit vector position and radius of the site term. The site
         // radius is stored as an elevation. The latitude and longitude or stored
         //in degrees.
@@ -347,8 +375,8 @@ public class SiteData
 		output.writeDouble(earthShape.getLatDegrees(stationLocation));
 		output.writeDouble(earthShape.getLonDegrees(stationLocation));
 		output.writeDouble(stationRadius - earthShape.getEarthRadius(stationLocation));
-		output.writeInt(onDate);
-		output.writeInt(offDate);
+		output.writeInt((int)onDate);
+		output.writeInt((int)offDate);
 		data.write(output);
 	}
 
@@ -366,7 +394,7 @@ public class SiteData
 	public void write(Writer output, String stationName,
 			EarthShape earthShape) throws IOException 
 	{
-		output.write(stationName+" "+toString(earthShape)+"\n");
+		output.write(stationName+" "+toStringBasic(earthShape)+"\n");
 	}
 
 	/**
@@ -391,7 +419,7 @@ public class SiteData
 	@Override
     public String toString()
     {
-      return toString(EarthShape.WGS84);
+      return toString(VectorGeo.earthShape);
     }
     
     /**
@@ -401,6 +429,19 @@ public class SiteData
      * @return A string defining this SiteData contents.
      */
     public String toString(EarthShape earthShape)
+	{
+		return String.format("%s %7d %7d %s", 
+				getPositionString(earthShape),
+				onDate, offDate, getDataString());
+	}
+
+    /**
+     * Returns a string defining this SiteData contents.
+     * 
+     * @param earthShape The EarthShape for the site defining this site term.
+     * @return A string defining this SiteData contents.
+     */
+    public String toStringBasic(EarthShape earthShape)
 	{
 		return String.format("%s %7d %7d %s", 
 				getPositionString(earthShape),
@@ -485,7 +526,7 @@ public class SiteData
      * 
      * @return offdate
      */
-    public int getOffDate() {
+    public long getOffDate() {
         return offDate;
     }
 
@@ -542,7 +583,91 @@ public class SiteData
 	{
 		this.onDate = GMTFormat.getJDate(epochTime);
 	}
+	
+	/**
+	 * Retrieve the AttributeDataDefinition object
+	 * @return
+	 */
+	public AttributeDataDefinitions getAttributeDataDefinitions() {
+		return attrDef;
+	}
+	
+	/**
+	 * Retrieve the number of site term attributes, e.g.,
+	 * if P and S site terms are both defined, returns 2.
+	 * @return
+	 */
+	public int getNAttributes() {
+		return attrDef.getNAttributes();
+	}
+	
+	/**
+	 * Retrieve the name of the i'th site term attribute.
+	 * @param i
+	 * @return
+	 */
+	public String getAttributeName(int i) {
+		return attrDef.getAttributeName(i);
+	}
 
+	/**
+	 * Retrieve the units of the i'th site term attribute.
+	 * @param i
+	 * @return
+	 */
+	public String getAttributeUnit(int i) {
+		return attrDef.getAttributeUnit(i);
+	}
+	
+	/**
+	 * Retrieve the index of the specified attribute name, 
+	 * or -1 if the specified attribute does not exist. Case sensitive.
+	 * @param attributeName
+	 * @return
+	 */
+	public int getAttributeIndex(String attributeName) {
+		return attrDef.getAttributeIndex(attributeName);
+	}
+	
+	/**
+	 * Retrieve the value of the i'th site term attribute.
+	 * @param i
+	 * @return
+	 */
+	public double getAttributeValue(int i) {
+		return data.getDouble(i);
+	}
+
+	/**
+	 * Retrieve the Data object.	 * @param i
+	 * @return
+	 */
+	public Data getData() {
+		return data;
+	}
+	
+	/**
+	 * Retrieve a String containing the all the attribute information.
+	 * attributeName = attributeValue attributeUnits, ...
+	 * @return
+	 */
+	public String getDataString() {
+		String s = "";
+		for (int i=0; i<getNAttributes(); ++i)
+		  s += ", "+getDataString(i);
+		return s.substring(2);
+	}
+	
+	/**
+	 * Retrieve a String containing the attribute information for the i'th attribute.
+	 * attributeName = attributeValue attributeUnits
+	 * @return
+	 */
+	public String getDataString(int i) {
+		return String.format("%s = %1.3f %s", getAttributeName(i), 
+				getAttributeValue(i), getAttributeUnit(i));
+	}
+	
 	/**
 	 * Returns the site term in seconds.
 	 * 

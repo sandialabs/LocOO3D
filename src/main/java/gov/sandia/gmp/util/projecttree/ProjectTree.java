@@ -134,14 +134,20 @@ public class ProjectTree extends ProjectNode {
 	 * that will represent the root of the dependency tree.
 	 * @throws Exception
 	 */
-	public ProjectTree(String projectSource) throws Exception {
-		// build the ProjectNode for root, then copy it into this.
-		this.copy(getDependents(projectSource));
+	public ProjectTree(File projectSource) throws Exception {
+		if (!projectSource.getName().equals("pom.xml"))
+			projectSource = new File(projectSource, "pom.xml");
+		this.copy(getDependents(projectSource.getAbsolutePath()));
 	}
 
-	public void writeVersionFiles(File outputDir)
-	{
-
+	/**
+	 * Constructor.
+	 * @param projectDir the path to the project directory in the user's git directory
+	 * that will represent the root of the dependency tree.
+	 * @throws Exception
+	 */
+	public ProjectTree(String projectSource) throws Exception {
+		this(new File(projectSource));
 	}
 
 	/**

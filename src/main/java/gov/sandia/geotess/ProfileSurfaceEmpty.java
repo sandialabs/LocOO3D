@@ -40,6 +40,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Scanner;
 
+import gov.sandia.gmp.util.globals.InterpolatorType;
+
 public class ProfileSurfaceEmpty extends Profile
 {
 
@@ -102,6 +104,13 @@ public class ProfileSurfaceEmpty extends Profile
 	public boolean isNaN(int nodeIndex, int attributeIndex)
 	{
 		return true;
+	}
+
+	@Override
+	public double getValue(InterpolatorType rInterpType, int attributeIndex,
+			double radius, boolean allowRadiusOutOfRange)
+	{
+		return Double.NaN;
 	}
 
 	@Override

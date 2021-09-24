@@ -122,6 +122,9 @@ public class Layers implements Serializable
     Layers newLayers = new Layers();
     newLayers.interfaces = (ArrayList<Level>)this.interfaces.clone();
     newLayers.layerNames = (HashMap<String, Level>)this.layerNames.clone();
+    newLayers.radii = (TreeMap<Double,TreeMap<Integer, Level>>)this.radii.clone();
+    newLayers.majorLayerIndexMap = (Level[])this.majorLayerIndexMap.clone(); 
+    newLayers.mapUpToDate = this.mapUpToDate;
     return newLayers;
   }
 
@@ -171,13 +174,11 @@ public class Layers implements Serializable
    * 
    * @throws GeoTessException
    */
-  public void addRadius(GeoTessPosition profile, int majorLayerIndex,
+  public void addRadius(GeoTessPosition profile, int majorLayerIndex, EarthInterface earthInterface,
   		                  LayerSide topBottom)
          throws GeoTessException 
   {
-    addRadius(new LevelMajorLayer(majorLayerIndex,
-    					EarthInterface.getValidMappedEarthInterfaceName(profile.getModel().getMetaData().getLayerName(majorLayerIndex)),
-  		        topBottom), profile);
+    addRadius(new LevelMajorLayer(majorLayerIndex, earthInterface.name(), topBottom), profile);
   }
 
   /**

@@ -38,6 +38,7 @@ import java.io.IOException;
 import gov.sandia.geotess.GeoTessException;
 import gov.sandia.geotess.GeoTessPosition;
 import gov.sandia.gmp.util.globals.InterpolatorType;
+import gov.sandia.gmp.util.globals.Site;
 import gov.sandia.gmp.util.numerical.vector.VectorUnit;
 
 public class LibCorr3D

@@ -34,12 +34,9 @@ package gov.sandia.gmp.infrasoundpredictor;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.EnumSet;
-import java.util.LinkedHashSet;
 
 import gov.sandia.gmp.baseobjects.AttributeIndexerSmart;
-import gov.sandia.gmp.baseobjects.BaseObjects;
 import gov.sandia.gmp.baseobjects.geovector.GeoVector;
 import gov.sandia.gmp.baseobjects.globals.GeoAttributes;
 import gov.sandia.gmp.baseobjects.globals.RayType;
@@ -406,17 +403,4 @@ public class InfrasoundPredictor extends Predictor implements
 	@Override
 	protected double getDshDr() { return dshdr; }
 
-	static public Collection<String> getDependencies()
-	{
-		Collection<String> dependencies = new LinkedHashSet<>();
-		addDependencies(dependencies);
-		return dependencies;
-	}
-	
-	static public void addDependencies(Collection<String> dependencies)
-	{
-		dependencies.add("InfrasoundPredictor "+getVersion());
-		BaseObjects.addDependencies(dependencies);
-	}
-	
 }

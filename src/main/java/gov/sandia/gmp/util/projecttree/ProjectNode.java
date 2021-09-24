@@ -47,7 +47,7 @@ import java.util.Set;
  * @author sballar
  *
  */
-class ProjectNode implements Comparator<ProjectNode> {
+public class ProjectNode implements Comparator<ProjectNode> {
 	protected String groupId;
 	protected String projectId;
 	protected String version;
@@ -113,7 +113,7 @@ class ProjectNode implements Comparator<ProjectNode> {
 	 * @param topDown
 	 * @return
 	 */
-	protected Set<ProjectNode> getSet(boolean topDown) {
+	public Set<ProjectNode> getSet(boolean topDown) {
 		Set<ProjectNode> set = new LinkedHashSet<>();
 		return this.addToSet(set, topDown);
 	}
@@ -126,14 +126,14 @@ class ProjectNode implements Comparator<ProjectNode> {
 	 *                bottomUp.
 	 * @return a String with all the project nodes.
 	 */
-	protected String getSetString(boolean topDown) {
+	public String getSetString(boolean topDown) {
 		StringBuffer buf = new StringBuffer();
 		for (ProjectNode node : getSet(topDown))
 			buf.append(node.toString() + "\n");
 		return buf.toString();
 	}
 
-	protected String getSetString() {
+	public String getSetString() {
 		ArrayList<String> list = new ArrayList<>();
 		for (ProjectNode node : getSet(true))
 			list.add(node.toString());

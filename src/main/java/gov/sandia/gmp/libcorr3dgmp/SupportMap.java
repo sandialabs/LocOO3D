@@ -48,10 +48,10 @@ import java.util.TreeMap;
 
 import gov.sandia.geotess.GeoTessModel;
 import gov.sandia.geotess.extensions.libcorr3d.LibCorr3DModel;
-import gov.sandia.geotess.extensions.libcorr3d.Site;
 import gov.sandia.gmp.baseobjects.PropertiesPlusGMP;
 import gov.sandia.gmp.util.globals.GMTFormat;
 import gov.sandia.gmp.util.globals.Globals;
+import gov.sandia.gmp.util.globals.Site;
 import gov.sandia.gmp.util.globals.Utils;
 import gov.sandia.gmp.util.numerical.vector.VectorUnit;
 import gov.sandia.gmp.util.propertiesplus.PropertiesPlus;

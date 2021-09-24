@@ -42,13 +42,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Scanner;
 
-import gov.sandia.gmp.libcorr3dgmp.LibCorr3DGMP;
 import gov.sandia.gmp.seismicbasedata.SeismicBaseData;
 import gov.sandia.gmp.util.exceptions.GMPException;
 import gov.sandia.gmp.util.globals.Utils;
@@ -1630,17 +1627,4 @@ public class LookupTable
 		return message == null ? "invalid code "+Integer.toString(code) : message;
 	}
 
-	static public Collection<String> getDependencies()
-	{
-		Collection<String> dependencies = new LinkedHashSet<>();
-		addDependencies(dependencies);
-		return dependencies;
-	}
-	
-	static public void addDependencies(Collection<String> dependencies)
-	{
-		dependencies.add("LookupTablesDZ "+getVersion());
-		LibCorr3DGMP.addDependencies(dependencies);
-	}
-	
 }

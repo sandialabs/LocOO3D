@@ -79,6 +79,24 @@ import gov.sandia.gmp.util.exceptions.GMPException;
  */
 public class GMTFormat
 {
+	
+	static final public long MIN_JDATE = -1;
+	
+	static final public long MAX_JDATE = 2286324;
+	
+	/** 
+	 * Minimum epochTime.
+	 * MINETIME = -1E10 corresponds to jdate 1653041
+	 */
+	static final public double MIN_EPOCH_TIME = -1E10;
+	
+	/** 
+	 * Maximum epochTime.
+	 * MAXETIME = 1E10 corresponds to jdate 2286324.
+	 */
+	static final public double MAX_EPOCH_TIME = 1E10;
+	
+
 	/**
 	 * Uses format "yyyy-MM-dd HH:mm:ss" with GMT timezone.
 	 */
@@ -121,7 +139,7 @@ public class GMTFormat
 	 * GregorianCalendar object initialized with GMT timezone
 	 */
 	static final public Calendar LocalCalendar = new GregorianCalendar();
-
+	
 	/**
 	 * Set the TimeZone in the GMT DateFormat objects
 	 */
@@ -272,12 +290,13 @@ public class GMTFormat
 
 	/**
 	 * Convert a jdate (int yyyyddd) into an epoch time (double seconds since 1970).
+	 * Result will range between -1E10 and 1E10.
 	 * @param jdate
 	 * @return int yyyyddd
 	 */
-	static public double getEpochTime(int jdate) 
+	static public double getEpochTime(long jdate) 
 	{
-		return getEpochTime(getDate(jdate));
+		return jdate >= MAX_JDATE ? MAX_EPOCH_TIME : Math.max(getEpochTime(getDate(jdate)), MIN_EPOCH_TIME);
 	}
 
 	/**
@@ -325,14 +344,16 @@ public class GMTFormat
 
 	/**
 	 * Convert a jdate (int yyyyddd) into an epoch time (double seconds since 1970).
-	 * Before returning it, 1 day minus 1 millisecond is added to the
-	 * epoch time.
+	 * Before returning it, 1 day minus 1 millisecond is added to the epoch time.
+	 * Range will be +/- 1e10 inclusive.
 	 * @param jdate
 	 * @return int yyyyddd
 	 */
-	static public double getOffTime(int jdate) 
+	static public double getOffTime(long jdate) 
 	{
-		return getEpochTime(getDate(jdate))+86399.999;
+		return jdate <= MIN_JDATE ? MIN_EPOCH_TIME 
+				: jdate >= MAX_JDATE ? MAX_EPOCH_TIME 
+					: getEpochTime(getDate(jdate))+86399.999;
 	}
 
 	/**
@@ -340,22 +361,22 @@ public class GMTFormat
 	 * @param jdate (int yyyyddd)
 	 * @return java.util.Date
 	 */
-	static public synchronized java.util.Date getDate(int jdate)
+	static public synchronized java.util.Date getDate(long jdate)
 	{
 		GMTCalendar.clear();
-		GMTCalendar.set(Calendar.YEAR,  jdate / 1000);
-		GMTCalendar.set(Calendar.DAY_OF_YEAR, jdate % 1000);
+		GMTCalendar.set(Calendar.YEAR,  (int)jdate / 1000);
+		GMTCalendar.set(Calendar.DAY_OF_YEAR, (int)jdate % 1000);
 		return GMTCalendar.getTime();
 	}
 
 	/**
 	 * Convert jdate (int yyyyddd) into a Date
-	 * @param time
+	 * @param date
 	 * @return jdate (int yyyyddd)
 	 */
-	static public synchronized int getJDate(java.util.Date time)
+	static public synchronized int getJDate(java.util.Date date)
 	{
-		GMTCalendar.setTime(time);
+		GMTCalendar.setTime(date);
 		return GMTCalendar.get(Calendar.YEAR) * 1000
 		+ GMTCalendar.get(Calendar.DAY_OF_YEAR);
 	}
@@ -393,12 +414,14 @@ public class GMTFormat
 
 	/**
 	 * Convert epochTime (seconds since 1970) to jdate (int yyyyddd).
+	 * Result will be between 1653041 and 2286324, inclusive.
 	 * @param epochTime double seconds since 1970
 	 * @return int yyyyddd
 	 */
 	static public int getJDate(double epochTime)
 	{
-		return getJDate(getDate(epochTime));
+		return (int) (epochTime <= MIN_EPOCH_TIME ? MIN_JDATE : epochTime >= MAX_EPOCH_TIME ? MAX_JDATE 
+				: getJDate(getDate(epochTime)));
 	}
 
 	/**

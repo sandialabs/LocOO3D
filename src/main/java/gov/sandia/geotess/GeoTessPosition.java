@@ -726,52 +726,9 @@ public abstract class GeoTessPosition
 	 *                values.
 	 * @throws GeoTessException 
 	 */
-	public void getWeights(double dkm,	HashMap<Integer, Double> weights) throws GeoTessException
-	{
-		getWeights(weights, dkm, radius, layerId, radialInterpolatorType);
-	}
-
-	/**
-	 * Returns the influencing node weights at the current position.
-	 * 
-	 * @param dkm The step size about the position (km).
-	 * @param weights The weight list that associates the active point index with
-	 *                its determined weight. Note this map is not cleared.
-	 *                Calculated weights are added to any previously existing
-	 *                values.
-	 * @throws GeoTessException 
-	 */
 	public void getWeights(double dkm,	Map<Integer, Double> weights) throws GeoTessException
 	{
 		getWeights(weights, dkm, radius, layerId, radialInterpolatorType);
-	}
-
-	/**
-	 * Returns the influencing node weights at the current lateral position
-	 * using the input layer index and radius.
-	 * 
-	 * @param dkm The step size about the position (km).
-	 * @param weights The weight list that associates the active point index with
-	 *                its determined weight. Note this map is not cleared.
-	 *                Calculated weights are added to any previously existing
-	 *                values.
-	 * @param radius           The radius at which the interpolation is performed.
-	 * @param majorLayerIndex  The major layer index for which the interpolation
-	 *                         is performed.
-	 * @param radialInterpType The radial interpolation type.
-	 * @throws GeoTessException 
-	 */
-	public void getWeights(HashMap<Integer, Double> weights, double dkm, double radius, int majorLayerIndex, InterpolatorType radialInterpType) throws GeoTessException
-	{
-		//**T
-		int tid = layerTessIds[majorLayerIndex];
-		checkTessellation(tid);
-
-		int[] v = vertices.get(tid).getArray();
-		double[] h = hCoefficients.get(tid).getArray();
-
-		for (int i = 0; i < vertices.get(tid).size(); ++i)
-			profiles[v[i]][majorLayerIndex].getWeights(weights, dkm, radius, h[i], radialInterpType);
 	}
 
 	/**
@@ -2473,7 +2430,7 @@ public abstract class GeoTessPosition
 		}
 	}
 
-	public void getWeights(HashMap<Integer, Double> weights, double dkm) throws GeoTessException
+	public void getWeights(Map<Integer, Double> weights, double dkm) throws GeoTessException
 	{
 		if (radialInterpolatorType == InterpolatorType.CUBIC_SPLINE)
 			throw new GeoTessException("\nCannot compute radial coefficients for InterpolatorType.CUBIC_SPLINE");

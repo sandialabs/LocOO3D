@@ -6,7 +6,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>gnem</groupId>
 	<artifactId>locoo3d</artifactId>
-	<version>1.9.9</version>
+	<version>1.9.10</version>
 	<distributionManagement>
 		<repository>
 			<uniqueVersion>false</uniqueVersion>

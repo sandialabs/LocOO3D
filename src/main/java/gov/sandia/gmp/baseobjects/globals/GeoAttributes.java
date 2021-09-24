@@ -229,6 +229,16 @@ public enum GeoAttributes {
 	TT_SITE_CORRECTION("seconds"),
 
 	/**
+	 * Travel time site correction for P phases, in seconds.
+	 */
+	TT_SITE_CORRECTION_P("seconds"),
+
+	/**
+	 * Travel time site correction for S phases, in seconds.
+	 */
+	TT_SITE_CORRECTION_S("seconds"),
+
+	/**
 	 * Travel time source correction, in seconds.
 	 */
 	TT_SOURCE_CORRECTION("seconds"),

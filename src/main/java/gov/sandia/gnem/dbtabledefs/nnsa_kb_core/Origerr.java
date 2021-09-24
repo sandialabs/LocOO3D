@@ -86,7 +86,7 @@ public class Origerr extends BaseRow implements Serializable {
    */
   private double sxx;
 
-  static final public double SXX_NA = -100000000;
+  static final public double SXX_NA = -9999999999.999;
 
   /**
    * <I>stt</I>, <I>stx</I>, <I>sty</I>, <I>stz</I>, <I>sxx</I>, <I>sxy</I>, <I>sxz</I>, <I>syy</I>,
@@ -101,7 +101,7 @@ public class Origerr extends BaseRow implements Serializable {
    */
   private double syy;
 
-  static final public double SYY_NA = -100000000;
+  static final public double SYY_NA = -9999999999.999;
 
   /**
    * <I>stt</I>, <I>stx</I>, <I>sty</I>, <I>stz</I>, <I>sxx</I>, <I>sxy</I>, <I>sxz</I>, <I>syy</I>,
@@ -116,7 +116,7 @@ public class Origerr extends BaseRow implements Serializable {
    */
   private double szz;
 
-  static final public double SZZ_NA = -100000000;
+  static final public double SZZ_NA = -9999999999.999;
 
   /**
    * <I>stt</I>, <I>stx</I>, <I>sty</I>, <I>stz</I>, <I>sxx</I>, <I>sxy</I>, <I>sxz</I>, <I>syy</I>,
@@ -131,7 +131,7 @@ public class Origerr extends BaseRow implements Serializable {
    */
   private double stt;
 
-  static final public double STT_NA = -100000000;
+  static final public double STT_NA = -9999999999.999;
 
   /**
    * <I>stt</I>, <I>stx</I>, <I>sty</I>, <I>stz</I>, <I>sxx</I>, <I>sxy</I>, <I>sxz</I>, <I>syy</I>,
@@ -146,7 +146,7 @@ public class Origerr extends BaseRow implements Serializable {
    */
   private double sxy;
 
-  static final public double SXY_NA = -100000000;
+  static final public double SXY_NA = -9999999999.999;
 
   /**
    * <I>stt</I>, <I>stx</I>, <I>sty</I>, <I>stz</I>, <I>sxx</I>, <I>sxy</I>, <I>sxz</I>, <I>syy</I>,
@@ -161,7 +161,7 @@ public class Origerr extends BaseRow implements Serializable {
    */
   private double sxz;
 
-  static final public double SXZ_NA = -100000000;
+  static final public double SXZ_NA = -9999999999.999;
 
   /**
    * <I>stt</I>, <I>stx</I>, <I>sty</I>, <I>stz</I>, <I>sxx</I>, <I>sxy</I>, <I>sxz</I>, <I>syy</I>,
@@ -176,7 +176,7 @@ public class Origerr extends BaseRow implements Serializable {
    */
   private double syz;
 
-  static final public double SYZ_NA = -100000000;
+  static final public double SYZ_NA = -9999999999.999;
 
   /**
    * <I>stt</I>, <I>stx</I>, <I>sty</I>, <I>stz</I>, <I>sxx</I>, <I>sxy</I>, <I>sxz</I>, <I>syy</I>,
@@ -191,7 +191,7 @@ public class Origerr extends BaseRow implements Serializable {
    */
   private double stx;
 
-  static final public double STX_NA = -100000000;
+  static final public double STX_NA = -9999999999.999;
 
   /**
    * <I>stt</I>, <I>stx</I>, <I>sty</I>, <I>stz</I>, <I>sxx</I>, <I>sxy</I>, <I>sxz</I>, <I>syy</I>,
@@ -206,7 +206,7 @@ public class Origerr extends BaseRow implements Serializable {
    */
   private double sty;
 
-  static final public double STY_NA = -100000000;
+  static final public double STY_NA = -9999999999.999;
 
   /**
    * <I>stt</I>, <I>stx</I>, <I>sty</I>, <I>stz</I>, <I>sxx</I>, <I>sxy</I>, <I>sxz</I>, <I>syy</I>,
@@ -221,7 +221,7 @@ public class Origerr extends BaseRow implements Serializable {
    */
   private double stz;
 
-  static final public double STZ_NA = -100000000;
+  static final public double STZ_NA = -9999999999.999;
 
   /**
    * Standard error of one observation. This column is derived from the discrepancies in the arrival
@@ -280,7 +280,7 @@ public class Origerr extends BaseRow implements Serializable {
    */
   private double sdepth;
 
-  static final public double SDEPTH_NA = -1;
+  static final public double SDEPTH_NA = -9999999999.999;
 
   /**
    * Origin time error. This column denotes the time uncertainty that accompanies the average error

@@ -38,11 +38,12 @@ import java.util.HashMap;
 
 import gov.sandia.geotess.GeoTessException;
 import gov.sandia.geotess.GeoTessMetaData;
-import gov.sandia.geotess.GeoTessModel;
-import gov.sandia.gmp.baseobjects.globals.EarthInterface;
-import gov.sandia.gmp.baseobjects.globals.SeismicPhase;
+import gov.sandia.geotess.GeoTessPosition;
 import gov.sandia.gmp.bender.BenderConstants.RayDirection;
 import gov.sandia.gmp.bender.BenderModelInterfaces;
+import gov.sandia.gmp.baseobjects.globals.EarthInterface;
+import gov.sandia.gmp.baseobjects.globals.SeismicPhase;
+import gov.sandia.gmp.util.containers.Tuple;
 import gov.sandia.gmp.util.containers.arraylist.ArrayListDouble;
 import gov.sandia.gmp.util.containers.arraylist.ArrayListInt;
 import gov.sandia.gmp.util.globals.Globals;
@@ -212,8 +213,10 @@ public class PhaseRayBranchModel
 	 * @throws IOException
 	 * @throws GeoTessException
 	 */
-	public PhaseRayBranchModel(GeoTessModel model, SeismicPhase sp, BenderModelInterfaces benderModelInterfaces,
-			HashMap<EarthInterface, EarthInterface> phaseModelInterfaceRemap, double srcRcvrDistDeg, double plldw)
+	public PhaseRayBranchModel(GeoTessPosition depthProfile, SeismicPhase sp,
+			BenderModelInterfaces benderModelInterfaces,
+			ArrayList<Tuple<RayDirection, EarthInterface>> rayBrnchDirChngList,
+			double srcRcvrDistDeg, double plldw)
 			throws IOException, GeoTessException {
 
 		// set the seismic phase
@@ -227,19 +230,14 @@ public class PhaseRayBranchModel
 
 		// make the phase layer level builder
 
-		phaseLayerLevelBuilder = new PhaseLayerLevelBuilder(model, 0, validInterfaceNames);
+		phaseLayerLevelBuilder = new PhaseLayerLevelBuilder(depthProfile, 0, modelEarthInterface, validInterfaceNames);
 		phaseLayerLevelBuilder.setPhaseLayerLevelDepthWidth(plldw);
 
-		// extract the ray branch entries from the seismic phase ...
 		// create the interface name and index lists and the direction change list
 
-		String[] entries = sp.getRayBranchList().split(",");
-		for (int i = 0; i < entries.length; ++i)
-			entries[i] = entries[i].trim();
-
-		rayBranchDirectionChangeType = new ArrayList<RayDirection>(entries.length / 2 + 2);
-		rayBranchInterfaceNameList = new ArrayList<String>(entries.length / 2 + 2);
-		rayBranchInterfaceIndxList = new ArrayListInt(entries.length / 2 + 2);
+		rayBranchDirectionChangeType = new ArrayList<RayDirection>(rayBrnchDirChngList.size() + 2);
+		rayBranchInterfaceNameList = new ArrayList<String>(rayBrnchDirChngList.size() + 2);
+		rayBranchInterfaceIndxList = new ArrayListInt(rayBrnchDirChngList.size() + 2);
 		levelDefinitionMap = new HashMap<String, PhaseLayerLevelDefinition>();
 
 		rayBranchDirectionChangeType.add(RayDirection.SOURCE);
@@ -250,10 +248,10 @@ public class PhaseRayBranchModel
 
 		int minTopSideInterfaceIndex = -1;
 		RayDirection lastRayBrnchDirChngType = null;
-		for (int i = 0; i < entries.length; i += 2) {
+		for (int i = 0; i < rayBrnchDirChngList.size(); ++i) {
 			// get next branch change
 
-			RayDirection rayBrnchDirChngType = RayDirection.valueOf(entries[i]);
+			RayDirection rayBrnchDirChngType = rayBrnchDirChngList.get(i).first;
 
 			// check for invalid branch transition adjacent pairs (bottom -> bottom,
 			// top -> top, top -> refraction, refraction -> top, and refraction ->
@@ -280,51 +278,26 @@ public class PhaseRayBranchModel
 				}
 			}
 
-			// see if any EarthInterface names in the phase specification require
-			// re-mapping (e.g. "SURFACE" is used for free surface reflections but an
-			// ak135 model may only have "UPPER_CRUST_TOP" as it's free surface
-			// definition. In this case the map has "SURFACE" -> "UPPER_CRUST_TOP"
-
-			EarthInterface rmap = phaseModelInterfaceRemap.get(EarthInterface.valueOf(entries[i + 1]));
-			if (rmap != null)
-				entries[i + 1] = rmap.name();
-
-			// valid direction change type ... add type, get associated interface
+			// add ray branch direction type and get associated interface
 			// index, and check for refraction
 
 			rayBranchDirectionChangeType.add(rayBrnchDirChngType);
-			Integer validIndx = validInterfaceNames.get(entries[i + 1]);
-			if (validIndx == null) {
-				throw new IOException("Error: Phase Interface \"" + entries[i + 1] + "\"" + ", required by the phase \""
-						+ sp.name() + "\"" + " definition" + Globals.NL
-						+ "       is not defined in the current input model." + Globals.NL
-						+ "       Use Bender property \"" + "benderPhaseInterfaceToModelInterfaceRemap = "
-						+ entries[i + 1] + "  XXX\"" + Globals.NL + "       to remap the interface to XXX, where XXX"
-						+ " is an interface defined in the model.");
-			}
-
-			int indx = validIndx;
+			EarthInterface earthInterface = rayBrnchDirChngList.get(i).second;
+			int indx = validInterfaceNames.get(earthInterface.name());
 			if (rayBrnchDirChngType == RayDirection.BOTTOM) {
 				// refraction ... get level definition and assign interface name ...
-				// set interface index to -1
 
-				levelDefinitionMap.put(entries[i + 1],
-						phaseLayerLevelBuilder.getPhaseLayerLevelDefinition(entries[i + 1]));
-				rayBranchInterfaceNameList.add(entries[i + 1]);
-				// rayBranchInterfaceIndxList.add(-1);
+				levelDefinitionMap.put(earthInterface.name(),
+						phaseLayerLevelBuilder.getPhaseLayerLevelDefinition(earthInterface.name()));
+				rayBranchInterfaceNameList.add(earthInterface.name());
 				rayBranchInterfaceIndxList.add(indx);
 			}
 
-			// not a refraction ... then make sure interface index was valid (not -1) ...
-			// throw error otherwise
-
-			else if ((indx == -1) && (rayBrnchDirChngType != RayDirection.BOTTOM))
-				throw new IOException("Error: Ray Branch interface name \"" + entries[i + 1] + "\" is invalid ...");
 			else {
-				// valid fixed reflection ... add associated interface name and index
-				// and increment fixed reflection count
+				// not refraction ... must be valid fixed reflection ... add associated interface
+				// name and index and increment fixed reflection count
 
-				rayBranchInterfaceNameList.add(entries[i + 1]);
+				rayBranchInterfaceNameList.add(earthInterface.name());
 				rayBranchInterfaceIndxList.add(indx);
 				++fixedReflectionCount;
 				if ((rayBrnchDirChngType == RayDirection.TOP_SIDE_REFLECTION)
@@ -349,11 +322,11 @@ public class PhaseRayBranchModel
 		// refraction branches were defined.
 
 		if (levelDefinitionMap.size() == 0) {
-			String name = metaData.getLayerName(minTopSideInterfaceIndex);
+			String name = modelEarthInterface[minTopSideInterfaceIndex].name();
 			levelDefinitionMap.put(name, phaseLayerLevelBuilder.getPhaseLayerLevelDefinition(name));
 		}
 	}
-
+	
 	/**
 	 * Returns the number of ray branch direction change entries.
 	 * 
@@ -365,25 +338,23 @@ public class PhaseRayBranchModel
 	}
 
 	/**
-	 * Sets the initial angular distances between the fixed reflection points
-	 * based on the input source-receiver separation distance in degrees
+	 * Sets the initial angular distances between the fixed reflection points based
+	 * on the input source-receiver separation distance in degrees
 	 * 
 	 * @param srcRcvrDistDeg The source-receiver separation distance in degrees.
 	 */
-	public void setSourceReceiverDistance(double distDeg)
-	{
+	public void setSourceReceiverDistance(double distDeg) {
 		srcRcvrDistDeg = distDeg;
-		
+
 		// create a temporary array to hold distances between fixed reflections
 		// if this is a depth phase then make the first entry different (closer to
 		// the source) than the other fixed reflection sources.
 
 		double dist = Math.toRadians(srcRcvrDistDeg);
-    double[] angFrac = null;
-	  angFrac = new double [fixedReflectionCount + 2];
-	  angFrac[0] = 0.0;
-		if (isDepthPhase())
-		{
+		double[] angFrac = null;
+		angFrac = new double[fixedReflectionCount + 2];
+		angFrac[0] = 0.0;
+		if (isDepthPhase()) {
 			double bsr = 1.0;
 			if (srcRcvrDistDeg >= 90.0)
 				bsr = 0.05;
@@ -393,42 +364,34 @@ public class PhaseRayBranchModel
 				bsr = .05 * (6.0 - (srcRcvrDistDeg - 30.0) / 12.0);
 
 			for (int i = 1; i <= fixedReflectionCount; ++i)
-		    angFrac[i] = dist * (bsr + (1.0 - bsr) * (i - 1) / fixedReflectionCount); 
-		}
-		else
-		{
+				angFrac[i] = dist * (bsr + (1.0 - bsr) * (i - 1) / fixedReflectionCount);
+		} else {
 			for (int i = 1; i <= fixedReflectionCount; ++i)
-		    angFrac[i] = dist * i  / (fixedReflectionCount + 1); 
+				angFrac[i] = dist * i / (fixedReflectionCount + 1);
 		}
-    angFrac[fixedReflectionCount + 1] = dist;
-    
-    // now save the entries into the fixedReflectionInitialAngle list ...
-    // use 0.0 for non-fixed reflection entries.
-    
-    fixedReflInitialAngle = new ArrayListDouble(rayBranchDirectionChangeType.size());
-    int refl = 1;
-	  bottomSideReflectionIndexFromBMIndex = new ArrayListInt(fixedReflectionCount + 2);
-	  branchModelIndexFromBSRIndex = new ArrayListInt(fixedReflectionCount);
-	  underSideReflectionCount = 0;
-    for (int i = 0; i < rayBranchDirectionChangeType.size(); ++i)
-    {
-    	if (isFixedReflection(i))
-    	{
-    		fixedReflInitialAngle.add(angFrac[refl++]);
-    		if (rayBranchDirectionChangeType.get(i) == RayDirection.BOTTOM_SIDE_REFLECTION)
-    		{
-    		  bottomSideReflectionIndexFromBMIndex.add(underSideReflectionCount++);
-    		  branchModelIndexFromBSRIndex.add(i);
-    		}
-    		else
-    		  bottomSideReflectionIndexFromBMIndex.add(-1);
-    	}
-    	else
-    	{
-    		fixedReflInitialAngle.add(0.0);
-  		  bottomSideReflectionIndexFromBMIndex.add(-1);
-    	}
-    }
+		angFrac[fixedReflectionCount + 1] = dist;
+
+		// now save the entries into the fixedReflectionInitialAngle list ...
+		// use 0.0 for non-fixed reflection entries.
+
+		fixedReflInitialAngle = new ArrayListDouble(rayBranchDirectionChangeType.size());
+		int refl = 1;
+		bottomSideReflectionIndexFromBMIndex = new ArrayListInt(fixedReflectionCount + 2);
+		branchModelIndexFromBSRIndex = new ArrayListInt(fixedReflectionCount);
+		underSideReflectionCount = 0;
+		for (int i = 0; i < rayBranchDirectionChangeType.size(); ++i) {
+			if (isFixedReflection(i)) {
+				fixedReflInitialAngle.add(angFrac[refl++]);
+				if (rayBranchDirectionChangeType.get(i) == RayDirection.BOTTOM_SIDE_REFLECTION) {
+					bottomSideReflectionIndexFromBMIndex.add(underSideReflectionCount++);
+					branchModelIndexFromBSRIndex.add(i);
+				} else
+					bottomSideReflectionIndexFromBMIndex.add(-1);
+			} else {
+				fixedReflInitialAngle.add(0.0);
+				bottomSideReflectionIndexFromBMIndex.add(-1);
+			}
+		}
 	}
 
 	/**

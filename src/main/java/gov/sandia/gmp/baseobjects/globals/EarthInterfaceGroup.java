@@ -44,10 +44,11 @@ import java.util.HashMap;
  *
  */
 public enum EarthInterfaceGroup {
-	WATER,
-	CRUST,
+	CORE,
 	MANTLE,
-	CORE;
+	CRUST,
+	WATER,
+	NOT_DEFINED;
 	
 	/**
 	 * Given the input interface list a map of interface groups will be returned

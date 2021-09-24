@@ -53,6 +53,7 @@ import gov.sandia.geotess.GeoTessModel;
 import gov.sandia.gmp.util.containers.arraylist.ArrayListInt;
 import gov.sandia.gmp.util.containers.multilevelmap.MultiLevelMap;
 import gov.sandia.gmp.util.globals.GMTFormat;
+import gov.sandia.gmp.util.globals.Site;
 import gov.sandia.gmp.util.logmanager.ScreenWriterOutput;
 
 /**
@@ -237,7 +238,8 @@ public class LibCorr3DModels
 
         if (!supportFile.exists())
         {
-          System.out.println("LibCorr3DModels is generating default _supportMap.txt file.");
+        	if (logger != null && logger.getVerbosity() > 0)
+        		logger.writeln("LibCorr3DModels is generating default _supportMap.txt file.");
 
           // load all the files and extract station, phase, attribute
           // information
@@ -477,13 +479,13 @@ public class LibCorr3DModels
 
           if (logger != null && logger.getVerbosity() > 0)
           {
-            System.out.printf("LibCorr3DModels loaded info about %d models %nand %d station-phase-attribute combinations%n"
+            logger.writef("LibCorr3DModels loaded info about %d models %nand %d station-phase-attribute combinations%n"
                 + "from file %s%nin %1.3f seconds%n%n",
                 modelIndexes.size(), models.size(),
                 supportFile.getCanonicalPath(),
                 timer * 1e-9);
 
-            System.out.println("LibCorr3D model : associated station names:\n" + getModelSiteMapToString());
+            logger.writeln("LibCorr3D model : associated station names:\n" + getModelSiteMapToString());
           }
 
           // String errors = testSupportMap();

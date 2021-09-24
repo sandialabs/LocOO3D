@@ -269,6 +269,8 @@ public abstract class Profile
 		if (!allowRadiusOutOfRange && (radius < getRadiusBottom() || radius > getRadiusTop()))
 			return Double.NaN;
 		
+		if (getData().length == 0) return Double.NaN;
+		
 		// default behavior is to simply return the data value for the first
 		// data object. This works for all the Profile classes that only
 		// support a single Data object like ProfileConstant, ProfileSurface,

@@ -58,7 +58,6 @@ import gov.sandia.gmp.baseobjects.interfaces.impl.Prediction;
 import gov.sandia.gmp.bender.Bender;
 import gov.sandia.gmp.infrasoundpredictor.InfrasoundPredictor;
 import gov.sandia.gmp.libcorr3dgmp.LibCorr3DModelsGMP;
-import gov.sandia.gmp.lookupdz.LookupTable;
 import gov.sandia.gmp.lookupdz.LookupTablesGMP;
 import gov.sandia.gmp.slbmwrapper.SLBMWrapper;
 import gov.sandia.gmp.util.exceptions.GMPException;
@@ -784,23 +783,4 @@ public class PredictorFactory
 		return predictionRequestQueueSize;
 	}
 
-	static public Collection<String> getDependencies()
-	{
-		Collection<String> dependencies = new LinkedHashSet<>();
-		addDependencies(dependencies);
-		return dependencies;
-	}
-	
-	static public void addDependencies(Collection<String> dependencies)
-	{
-		dependencies.add("PredictorFactory "+getVersion());
-		Bender.addDependencies(dependencies);
-		LookupTable.addDependencies(dependencies);
-		SLBMWrapper.addDependencies(dependencies);
-		InfrasoundPredictor.addDependencies(dependencies);
-		
-		// fabric-common.version is only accessible when running an executable jar.
-		dependencies.add("ParallelUtils "+Utils.getVersion("fabric-common"));
-	}
-	
 }

@@ -36,8 +36,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.util.Collection;
-import java.util.LinkedHashSet;
 
 import gov.sandia.gmp.util.globals.Utils;
 
@@ -121,17 +119,6 @@ public class SeismicBaseData extends File
 	static public String getVersion() {
 		return Utils.getVersion("seismic-base-data");	
 		}
-
-	static public Collection<String> getDependencies() {
-		Collection<String> dependencies = new LinkedHashSet<>();
-		addDependencies(dependencies);
-		return dependencies;
-	}
-
-	static public void addDependencies(Collection<String> dependencies) {
-		dependencies.add("SeismicBaseData " + getVersion());
-		Utils.addDependencies(dependencies);
-	}
 
 	/**
 	 * This mail program will load a bunch of files from a seismicBaseData directory on a 

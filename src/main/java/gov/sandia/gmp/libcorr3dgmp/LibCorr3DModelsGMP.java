@@ -42,7 +42,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import gov.sandia.geotess.extensions.libcorr3d.LibCorr3DModels;
-import gov.sandia.geotess.extensions.libcorr3d.Site;
 import gov.sandia.gmp.baseobjects.AttributeIndexerSmart;
 import gov.sandia.gmp.baseobjects.Receiver;
 import gov.sandia.gmp.baseobjects.globals.GeoAttributes;
@@ -50,6 +49,7 @@ import gov.sandia.gmp.baseobjects.globals.SeismicPhase;
 import gov.sandia.gmp.baseobjects.interfaces.LookupTableInterface;
 import gov.sandia.gmp.baseobjects.interfaces.ReceiverInterface;
 import gov.sandia.gmp.util.exceptions.GMPException;
+import gov.sandia.gmp.util.globals.Site;
 import gov.sandia.gmp.util.logmanager.ScreenWriterOutput;
 
 /**

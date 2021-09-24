@@ -39,16 +39,13 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.TreeSet;
 
 import gov.sandia.gmp.baseobjects.PropertiesPlusGMP;
 import gov.sandia.gmp.parallelutils.ParallelBroker;
 import gov.sandia.gmp.parallelutils.ParallelBroker.ParallelMode;
 import gov.sandia.gmp.parallelutils.ParallelResult;
-import gov.sandia.gmp.predictorfactory.PredictorFactory;
 import gov.sandia.gmp.util.containers.arraylist.ArrayListLong;
 import gov.sandia.gmp.util.globals.GMTFormat;
 import gov.sandia.gmp.util.globals.Globals;
@@ -290,13 +287,13 @@ public class LocOO
 				System.out.print(String.format("LocOO version %s   %s%n%n", 
 						LocOO.getVersion(), GMTFormat.localTime.format(new Date())));
 
-				System.out.println("LocOO dependencies:");
 				try {
-					System.out.println(Utils.getDependencyVersions());
+					// when running from an executable jar, this will print out all the
+					// dependencies with version numbers. Fails when run from an IDE.
+					// Dependencies and version numbers are retrieved from <project>.version
+					// files stored in the jar file.
+					System.out.printf("LocOO dependencies:%n%s%n%n", Utils.getDependencyVersions());
 				} catch (IOException e) {
-					for (String d : LocOO.getDependencies())
-						System.out.println(d);
-					System.out.println();
 				}
 
 				buf.append("Must specify property file as only command line argument.\n\n");
@@ -689,17 +686,6 @@ public class LocOO
 				logger.write(String.format("LocOO3D v. %s started %s%n%n",
 						getVersion(), GMTFormat.localTime.format(new Date())));
 				
-				if (logger.getVerbosity() > 1)
-				{
-					logger.writeln("LocOO3D dependencies:");
-					try {
-						logger.writeln(Utils.getDependencyVersions());
-					} catch (IOException e) {
-						for (String d : getDependencies())
-							logger.writeln(d);
-						logger.writeln();
-					}
-				}
 				if (logfile == null)
 					logger.write(String.format("Status log file is off%n"));
 				else
@@ -713,19 +699,6 @@ public class LocOO
 			System.exit(1);
 		}
 
-	}
-	
-	static public Collection<String> getDependencies()
-	{
-		Collection<String> dependencies = new TreeSet<>();
-		addDependencies(dependencies);
-		return dependencies;
-	}
-	
-	static private void addDependencies(Collection<String> dependencies)
-	{
-		dependencies.add("LocOO3D "+getVersion());
-		PredictorFactory.addDependencies(dependencies);
 	}
 	
 }

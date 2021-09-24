@@ -35,17 +35,13 @@ package gov.sandia.gmp.libcorr3dgmp;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 
 import gov.sandia.geotess.GeoTessException;
 import gov.sandia.geotess.extensions.libcorr3d.LibCorr3D;
 import gov.sandia.geotess.extensions.libcorr3d.LibCorr3DModels;
-import gov.sandia.geotess.extensions.libcorr3d.Site;
 import gov.sandia.gmp.baseobjects.AttributeIndexerSmart;
-import gov.sandia.gmp.baseobjects.BaseObjects;
 import gov.sandia.gmp.baseobjects.Receiver;
 import gov.sandia.gmp.baseobjects.globals.GeoAttributes;
 import gov.sandia.gmp.baseobjects.globals.SeismicPhase;
@@ -59,6 +55,7 @@ import gov.sandia.gmp.baseobjects.interfaces.UncertaintyInterface;
 import gov.sandia.gmp.util.exceptions.GMPException;
 import gov.sandia.gmp.util.globals.Globals;
 import gov.sandia.gmp.util.globals.InterpolatorType;
+import gov.sandia.gmp.util.globals.Site;
 import gov.sandia.gmp.util.globals.Utils;
 
 public class LibCorr3DGMP extends LibCorr3D implements PathCorrectionsInterface, UncertaintyInterface
@@ -479,17 +476,4 @@ public class LibCorr3DGMP extends LibCorr3D implements PathCorrectionsInterface,
 		return libcorrModels.getModelFile(lookupTableIndex).getCanonicalPath();
 	}
 
-	static public Collection<String> getDependencies()
-	{
-		Collection<String> dependencies = new LinkedHashSet<>();
-		addDependencies(dependencies);
-		return dependencies;
-	}
-	
-	static public void addDependencies(Collection<String> dependencies)
-	{
-		dependencies.add("LibCorr3DGMP "+getVersion());
-		BaseObjects.addDependencies(dependencies);
-	}
-	
 }

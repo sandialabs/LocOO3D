@@ -114,7 +114,7 @@ public enum SeismicPhase {
 	/**
 	 * P reflection from the outer side of the Moho
 	 */
-	PmP(GeoAttributes.PSLOWNESS, "P reflection from the outer side of the Moho"),
+	PmP("PSLOWNESS", "TOP_SIDE_REFLECTION, MOHO", "P reflection from the outer side of the Moho"),
 
 	/**
 	 * PmP free surface reflection, (PmPPmP)
@@ -290,14 +290,14 @@ public enum SeismicPhase {
 	/**
 	 * Free surface reflection of P wave leaving a source downwards
 	 */
-	PP("PSLOWNESS", "BOTTOM, M660, BOTTOM_SIDE_REFLECTION, SURFACE, BOTTOM, M660",
+	PP("PSLOWNESS", "BOTTOM, M660, BOTTOM_SIDE_REFLECTION, FREE_SURFACE, BOTTOM, M660",
 			"Free surface reflection of P wave leaving a source downwards", "bigP_bigP"),
 
 	/**
 	 * P, leaving a source downwards, reflected as an S at the free surface. At
 	 * shorter distances the first leg is represented by a crustal P wave.
 	 */
-	PS("PSLOWNESS, SURFACE, SSLOWNESS", "BOTTOM, M660, BOTTOM_SIDE_REFLECTION, SURFACE, BOTTOM, M660",
+	PS("PSLOWNESS, FREE_SURFACE, SSLOWNESS", "BOTTOM, M660, BOTTOM_SIDE_REFLECTION, FREE_SURFACE, BOTTOM, M660",
 			"P, leaving a source downwards, reflected as an S at the free surface."
 					+ "<BR>At shorter distances the first leg is represented by a crustal P wave.",
 			"bigP_bigS"),
@@ -306,22 +306,22 @@ public enum SeismicPhase {
 	 * analogous to PP, multiple free surface reflection of P (2x)
 	 */
 	PPP("PSLOWNESS",
-			"BOTTOM, M660, BOTTOM_SIDE_REFLECTION, SURFACE, BOTTOM, M660, BOTTOM_SIDE_REFLECTION, SURFACE, BOTTOM, M660",
+			"BOTTOM, M660, BOTTOM_SIDE_REFLECTION, FREE_SURFACE, BOTTOM, M660, BOTTOM_SIDE_REFLECTION, FREE_SURFACE, BOTTOM, M660",
 			"analogous to PP, multiple free surface reflection of P (2x)"),
 
 	/**
 	 * PP to S converted reflection at the free surface; travel time matches that of
 	 * PSP
 	 */
-	PPS("PSLOWNESS, SURFACE, PSLOWNESS, SURFACE, SSLOWNESS",
-			"BOTTOM, M660, BOTTOM_SIDE_REFLECTION, SURFACE, BOTTOM, M660, BOTTOM_SIDE_REFLECTION, SURFACE, BOTTOM, M660",
+	PPS("PSLOWNESS, FREE_SURFACE, PSLOWNESS, FREE_SURFACE, SSLOWNESS",
+			"BOTTOM, M660, BOTTOM_SIDE_REFLECTION, FREE_SURFACE, BOTTOM, M660, BOTTOM_SIDE_REFLECTION, FREE_SURFACE, BOTTOM, M660",
 			"PP to S converted reflection at the free surface; travel time" + "<BR>matches that of PSP"),
 
 	/**
 	 * PS reflected at the free surface
 	 */
-	PSS("PSLOWNESS, SURFACE, SSLOWNESS",
-			"BOTTOM, M660, BOTTOM_SIDE_REFLECTION, SURFACE, BOTTOM, M660, BOTTOM_SIDE_REFLECTION, SURFACE, BOTTOM, M660",
+	PSS("PSLOWNESS, FREE_SURFACE, SSLOWNESS",
+			"BOTTOM, M660, BOTTOM_SIDE_REFLECTION, FREE_SURFACE, BOTTOM, M660, BOTTOM_SIDE_REFLECTION, FREE_SURFACE, BOTTOM, M660",
 			"PS reflected at the free surface"),
 
 	/**
@@ -504,14 +504,14 @@ public enum SeismicPhase {
 	/**
 	 * Free surface reflection of an S wave leaving a source downwards
 	 */
-	SS("SSLOWNESS", "BOTTOM, M660, BOTTOM_SIDE_REFLECTION, SURFACE, BOTTOM, M660",
+	SS("SSLOWNESS", "BOTTOM, M660, BOTTOM_SIDE_REFLECTION, FREE_SURFACE, BOTTOM, M660",
 			"Free surface reflection of an S wave leaving a source downwards", "bigS_bigS"),
 
 	/**
 	 * S, leaving source downwards, reflected as P at the free surface. At shorter
 	 * distances the second leg is represented by a crustal P wave.
 	 */
-	SP("SSLOWNESS, SURFACE, PSLOWNESS", "BOTTOM, M660, BOTTOM_SIDE_REFLECTION, SURFACE, BOTTOM, M660",
+	SP("SSLOWNESS, FREE_SURFACE, PSLOWNESS", "BOTTOM, M660, BOTTOM_SIDE_REFLECTION, FREE_SURFACE, BOTTOM, M660",
 			"S, leaving source downwards, reflected as P at the free surface. At"
 					+ "<BR>shorter distances the second leg is represented by a crustal P wave.",
 			"bigS_bigP"),
@@ -520,22 +520,22 @@ public enum SeismicPhase {
 	 * analogous to SS, multiple free surface reflection of S (2x)
 	 */
 	SSS("SSLOWNESS",
-			"BOTTOM, M660, BOTTOM_SIDE_REFLECTION, SURFACE, BOTTOM, M660, BOTTOM_SIDE_REFLECTION, SURFACE, BOTTOM, M660",
+			"BOTTOM, M660, BOTTOM_SIDE_REFLECTION, FREE_SURFACE, BOTTOM, M660, BOTTOM_SIDE_REFLECTION, FREE_SURFACE, BOTTOM, M660",
 			"analogous to SS, multiple free surface reflection of S (2x)"),
 
 	/**
 	 * SS to P converted reflection at the free surface; travel time matches that of
 	 * SPS
 	 */
-	SSP("SSLOWNESS, SURFACE, SSLOWNESS, SURFACE, PSLOWNESS",
-			"BOTTOM, M660, BOTTOM_SIDE_REFLECTION, SURFACE, BOTTOM, M660, BOTTOM_SIDE_REFLECTION, SURFACE, BOTTOM, M660",
+	SSP("SSLOWNESS, FREE_SURFACE, SSLOWNESS, FREE_SURFACE, PSLOWNESS",
+			"BOTTOM, M660, BOTTOM_SIDE_REFLECTION, FREE_SURFACE, BOTTOM, M660, BOTTOM_SIDE_REFLECTION, FREE_SURFACE, BOTTOM, M660",
 			"SS to P converted reflection at the free surface; travel time" + "<BR>matches that of SPS"),
 
 	/**
 	 * SP reflected at the free surface
 	 */
-	SPP("SSLOWNESS, SURFACE, PSLOWNESS",
-			"BOTTOM, M660, BOTTOM_SIDE_REFLECTION, SURFACE, BOTTOM, M660, BOTTOM_SIDE_REFLECTION, SURFACE, BOTTOM, M660",
+	SPP("SSLOWNESS, FREE_SURFACE, PSLOWNESS",
+			"BOTTOM, M660, BOTTOM_SIDE_REFLECTION, FREE_SURFACE, BOTTOM, M660, BOTTOM_SIDE_REFLECTION, FREE_SURFACE, BOTTOM, M660",
 			"SP reflected at the free surface"),
 
 	/**
@@ -1322,7 +1322,7 @@ public enum SeismicPhase {
 	/**
 	 * P resulting from reflection of upgoing P at the free surface
 	 */
-	pP("PSLOWNESS", "BOTTOM_SIDE_REFLECTION, SURFACE, BOTTOM, M660",
+	pP("PSLOWNESS", "BOTTOM_SIDE_REFLECTION, FREE_SURFACE, BOTTOM, M660",
 			"P resulting from reflection of upgoing P at the free surface", "littlep_bigP"),
 
 	/**
@@ -1848,7 +1848,7 @@ public enum SeismicPhase {
 	/**
 	 * S resulting from converted reflection of upgoing P at the free surface
 	 */
-	pS("PSLOWNESS, SURFACE, SSLOWNESS", "BOTTOM_SIDE_REFLECTION, SURFACE, BOTTOM, M660",
+	pS("PSLOWNESS, FREE_SURFACE, SSLOWNESS", "BOTTOM_SIDE_REFLECTION, FREE_SURFACE, BOTTOM, M660",
 			"S resulting from converted reflection of upgoing P at the free surface", "littlep_bigS"),
 
 	/**
@@ -2319,7 +2319,7 @@ public enum SeismicPhase {
 	/**
 	 * P resulting from converted reflection of upgoing S at the free surface
 	 */
-	sP("SSLOWNESS, SURFACE, PSLOWNESS", "BOTTOM_SIDE_REFLECTION, SURFACE, BOTTOM, M660",
+	sP("SSLOWNESS, FREE_SURFACE, PSLOWNESS", "BOTTOM_SIDE_REFLECTION, FREE_SURFACE, BOTTOM, M660",
 			"P resulting from converted reflection of upgoing S at the free surface", "littles_bigP"),
 
 	/**
@@ -2840,7 +2840,7 @@ public enum SeismicPhase {
 	/**
 	 * S resulting from reflection of upgoing S at the free surface
 	 */
-	sS("SSLOWNESS, SURFACE, SSLOWNESS", "BOTTOM_SIDE_REFLECTION, SURFACE, BOTTOM, M660",
+	sS("SSLOWNESS, FREE_SURFACE, SSLOWNESS", "BOTTOM_SIDE_REFLECTION, FREE_SURFACE, BOTTOM, M660",
 			"S resulting from reflection of upgoing S at the free surface", "littles_bigS"),
 
 	/**
@@ -5935,16 +5935,16 @@ public enum SeismicPhase {
 	 * PS to P converted reflection at the free surface; travel time matches that of
 	 * PPS
 	 */
-	PSP("PSLOWNESS, SURFACE, SSLOWNESS, SURFACE, PSLOWNESS",
-			"BOTTOM, M660, BOTTOM_SIDE_REFLECTION, SURFACE, BOTTOM, M660, BOTTOM_SIDE_REFLECTION, SURFACE, BOTTOM, M660",
+	PSP("PSLOWNESS, FREE_SURFACE, SSLOWNESS, FREE_SURFACE, PSLOWNESS",
+			"BOTTOM, M660, BOTTOM_SIDE_REFLECTION, FREE_SURFACE, BOTTOM, M660, BOTTOM_SIDE_REFLECTION, FREE_SURFACE, BOTTOM, M660",
 			"PS to P converted reflection at the free surface; travel time" + "<BR>matches that of PPS"),
 
 	/**
 	 * SP to S converted reflection at the free surface; travel time matches that of
 	 * SSP
 	 */
-	SPS("SSLOWNESS, SURFACE, PSLOWNESS, SURFACE, SSLOWNESS",
-			"BOTTOM, M660, BOTTOM_SIDE_REFLECTION, SURFACE, BOTTOM, M660, BOTTOM_SIDE_REFLECTION, SURFACE, BOTTOM, M660",
+	SPS("SSLOWNESS, FREE_SURFACE, PSLOWNESS, FREE_SURFACE, SSLOWNESS",
+			"BOTTOM, M660, BOTTOM_SIDE_REFLECTION, FREE_SURFACE, BOTTOM, M660, BOTTOM_SIDE_REFLECTION, FREE_SURFACE, BOTTOM, M660",
 			"SP to S converted reflection at the free surface; travel time" + "<BR>matches that of SSP"),
 
 	/**

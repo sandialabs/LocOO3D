@@ -1129,7 +1129,7 @@ public class Ray implements Comparable<Object>
 
 		if (drctnChngModl.getFirstPhaseLayerLevelDefinition().getInterfaceLayerTypeName().equals("CRUST_TOP"))
 		{
-			String[] names = {"MOHO", "MOHO_TOP"};
+			String[] names = {"MOHO", "MANTLE_TOP"};
 			if (source.getIndex() <= drctnChngModl.getPhaseLayerLevelBuilder().getInterfaceIndex(names))
 			{
 				throw new BenderException(ErrorCode.NONFATAL,

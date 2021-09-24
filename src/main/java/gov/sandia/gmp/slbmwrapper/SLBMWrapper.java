@@ -38,9 +38,7 @@ import static java.lang.Math.toRadians;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.EnumSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 import gov.sandia.gmp.baseobjects.AttributeIndexerSmart;
@@ -954,18 +952,4 @@ public class SLBMWrapper extends Predictor implements UncertaintyInterface
 	@Override
 	protected double getDshDr()  throws Exception { return Globals.NA_VALUE; }
 
-	static public Collection<String> getDependencies()
-	{
-		Collection<String> dependencies = new LinkedHashSet<>();
-		addDependencies(dependencies);
-		return dependencies;
-	}
-	
-	static public void addDependencies(Collection<String> dependencies)
-	{
-		dependencies.add("SLBMWrapper "+getVersion());
-		LibCorr3DGMP.addDependencies(dependencies);
-		dependencies.add("SLBM-JNI ???");
-	}
-	
 }
