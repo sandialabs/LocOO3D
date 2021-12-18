@@ -15,7 +15,7 @@
 # If any one of [ RSTT_ROOT, RSTT_HOME, SLBM_ROOT, SLBM_HOME ] is specified in your .bash_profile
 # then use of rstt/slbm will be possible without specifying RSTT here.  
 
-locoo3d_jar=$(pwd)/target/locoo3d-1.9.10-jar-with-dependencies.jar
+locoo3d_jar=$(pwd)/target/locoo3d-1.9.12-jar-with-dependencies.jar
 OJDBC=/Library/Oracle/instantclient_12_2/ojdbc8.jar
 OPKI=/Library/Oracle/instantclient_12_2/oraclepki.jar
 wallet=/Users/$USER/wallet
