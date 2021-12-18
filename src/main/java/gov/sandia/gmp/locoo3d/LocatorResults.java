@@ -989,8 +989,8 @@ public class LocatorResults
         Origin.MSID_NA,
         Origin.ML_NA,
         Origin.MLID_NA,
-        algorithm,
-        author,
+        algorithm.length() > 15 ? algorithm.substring(0, 15) : algorithm,
+        author.length() > 15 ? author.substring(0, 15) : author,
         Origin.COMMID_NA
         );
 

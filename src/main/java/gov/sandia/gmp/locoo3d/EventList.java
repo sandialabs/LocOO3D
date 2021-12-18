@@ -53,6 +53,7 @@ import gov.sandia.gmp.baseobjects.globals.GeoAttributes;
 import gov.sandia.gmp.baseobjects.globals.SeismicPhase;
 import gov.sandia.gmp.baseobjects.interfaces.PredictorInterface;
 import gov.sandia.gmp.baseobjects.seismicitydepth.SeismicityDepthModel;
+import gov.sandia.gmp.libcorr3dgmp.LibCorr3DModelsGMP;
 import gov.sandia.gmp.predictorfactory.PredictorFactory;
 import gov.sandia.gmp.util.exceptions.GMPException;
 import gov.sandia.gmp.util.globals.Globals;
@@ -247,6 +248,14 @@ public class EventList extends HashMap<Long, Event>
 				event.checkStationsAndPhases();
 			}
 		}
+		
+		if (logger.getVerbosity() > 0 && PredictorFactory.getCorrectionSurfaces().size() > 0)
+		{
+			logger.writeln("LibCorr3D Info:");
+			for (LibCorr3DModelsGMP libcorr : PredictorFactory.getCorrectionSurfaces().values())
+				logger.writeln(libcorr);
+		}
+  
 	}
 
 	private void setup() throws Exception

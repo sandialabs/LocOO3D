@@ -1,4 +1,4 @@
-STTbin/bash
+#!/bin/bash
 
 # This script creates bash script in the current directory
 # called 'locoo3d'.  It will call the locoo3d jar file as a runnable jar.
@@ -8,13 +8,18 @@ STTbin/bash
 # (no spaces around the '=' sign!).  If this variable is omitted or blank
 # database IO will not be possible but flat file IO will be possible.
 #
+# For wallet database connections, the user must specify the location of the
+# Oracle oraclepki.jar file on their system and the location of the wallet. 
+#
 # If rstt/slbm is to be used, specify the directory where the file libslbmjni.jnilib resides.
 # If any one of [ RSTT_ROOT, RSTT_HOME, SLBM_ROOT, SLBM_HOME ] is specified in your .bash_profile
 # then use of rstt/slbm will be possible without specifying RSTT here.  
 
-OJDBC=/Library/Oracle/instantclient_12_2/ojdbc8.jar
-RSTT=/Users/$USER/Documents/RSTT_v3.2.0/lib
 locoo3d_jar=$(pwd)/target/locoo3d-1.9.10-jar-with-dependencies.jar
+OJDBC=/Library/Oracle/instantclient_12_2/ojdbc8.jar
+OPKI=/Library/Oracle/instantclient_12_2/oraclepki.jar
+wallet=/Users/$USER/wallet
+RSTT=/Users/$USER/Documents/RSTT_v3.2.0/lib
 
 # ---- LocOO3D
 echo "Creating executable script file locoo3d that launches LocOO3D"
@@ -27,9 +32,9 @@ echo "#" >> locoo3d
 echo "# Include java.library.path only if RSTT is specified." >> locoo3d
 echo "#" >> locoo3d
 echo "if [ -z $RSTT ]; then" >> locoo3d
-echo "  java -Xmx1400m -classpath $locoo3d_jar:${OJDBC} gov.sandia.gmp.locoo3d.LocOO  \$*" >> locoo3d
-echo "else" >> locoo3d
-echo "  java -Xmx1400m -Djava.library.path=$RSTT -classpath $locoo3d_jar:${OJDBC} gov.sandia.gmp.locoo3d.LocOO  \$*" >> locoo3d
+echo "  java -Xmx1400m -classpath $locoo3d_jar:${OJDBC}:${OPKI} -Doracle.net.wallet_location=$wallet -Doracle.net.tns_admin=$wallet gov.sandia.gmp.locoo3d.LocOO  \$*" >> locoo3d
+echo "else " >> locoo3d
+echo "  java -Xmx1400m -Djava.library.path=$RSTT -classpath $locoo3d_jar:${OJDBC}:${OPKI} -Doracle.net.wallet_location=$wallet -Doracle.net.tns_admin=$wallet gov.sandia.gmp.locoo3d.LocOO  \$*" >> locoo3d
 echo "fi" >> locoo3d
 chmod 777 locoo3d
 
@@ -41,7 +46,7 @@ echo "# The substring '-Xmx????m' in the following execution" >> supportmap
 echo "# command specifies the amount of memory to make available" >> supportmap
 echo "# to the application, in megabytes." >> supportmap
 echo "#" >> supportmap
-echo "java -Xmx1400m -classpath $locoo3d_jar:${OJDBC} gov.sandia.gmp.libcorr3dgmp.SupportMap \$*" >> supportmap
+echo "java -Xmx1400m -classpath $locoo3d_jar:${OJDBC}:${OPKI} -Doracle.net.wallet_location=$wallet -Doracle.net.tns_admin=$wallet gov.sandia.gmp.libcorr3dgmp.SupportMap \$*" >> supportmap
 chmod 777 supportmap
 
 # ---- Add to path

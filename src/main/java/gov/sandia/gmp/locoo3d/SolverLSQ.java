@@ -297,6 +297,8 @@ extends Solver
 		// Iterate over each of the events in memory.
 		for (Event event : events.values())
 		{
+			long timer = System.nanoTime();
+
 			if (events.getInitialLocationMethod().equals("internal"))
 				event.setInitialLocation(event.calculateInitialLocation());
 				
@@ -319,8 +321,6 @@ extends Solver
 				event.logger.writeln(event.getObservationTable());
 				event.logger.writeln(event.getCorrelationMatrixString(event.getObservations()));
 			}
-
-			long timer = System.currentTimeMillis();
 
 			// initialize iteration counters.
 			sBaseIteration = 0;
@@ -373,10 +373,6 @@ extends Solver
 				event.errorlog.write(e);
 			}
 
-			timer = System.currentTimeMillis()-timer;
-			
-			event.setCalculationTime(timer*1e-3);
-
 			event.updateResiduals();
 
 			if (event.logger.getVerbosity() >= 3)
@@ -394,14 +390,19 @@ extends Solver
 				else
 					event.logger.writeln(event.getLocatorResults().toString());
 				
-				event.logger.write(String.format("Time to compute this location = %s%n%n", 
-						GMPGlobals.ellapsedTime(timer*1e-3)));
 			}
 
 			//------------------------------------------------------------------------
 			// generate grid of residuals, if requested by user in par file.
 			//------------------------------------------------------------------------
 			event.griddedResiduals();
+
+			timer = System.nanoTime()-timer;
+			event.setCalculationTime(timer*1e-9);
+			
+			if (event.logger.getVerbosity() >= 2)
+				event.logger.write(String.format("Time to compute this location = %1.6f seconds%n%n", 
+						timer*1e-9));
 		}
 	}
 
@@ -1097,7 +1098,7 @@ extends Solver
 				// the standard deviation of the weighted residuals.
 				// Includes all defining tt, az and sh weighted residuals.
 
-				event.nSSWR, 
+				event.getnSSWR(), 
 				// Number of times sum squared weighted residuals were calculated.
 
 				event.countArrivals(),

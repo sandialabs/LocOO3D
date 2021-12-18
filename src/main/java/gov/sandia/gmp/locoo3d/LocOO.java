@@ -40,7 +40,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import gov.sandia.gmp.baseobjects.PropertiesPlusGMP;
 import gov.sandia.gmp.parallelutils.ParallelBroker;
@@ -54,6 +56,8 @@ import gov.sandia.gmp.util.logmanager.ScreenWriterOutput;
 import gov.sandia.gmp.util.numerical.vector.EarthShape;
 import gov.sandia.gmp.util.numerical.vector.VectorGeo;
 import gov.sandia.gmp.util.profiler.ProfilerContent;
+import gov.sandia.gnem.dbtabledefs.nnsa_kb_core_extended.OriginExtended;
+import oracle.net.aso.c;
 
 public class LocOO
 {
@@ -273,6 +277,8 @@ public class LocOO
 	//
 
 	private ScreenWriterOutput logger, errorlog;
+	
+	static private Map<Long, List<Statistics>> statistics;
 
 	/**
 	 * @param args
@@ -313,7 +319,36 @@ public class LocOO
 			PropertiesPlusGMP properties = null;
 			properties = new PropertiesPlusGMP(propertyFile);
 
+			if (properties.containsKey("printStatistics") 
+					&& !properties.getProperty("printStatistics").equalsIgnoreCase("false"))
+				statistics = new HashMap<Long, List<Statistics>>();
+
 			(new LocOO()).run(properties);
+			
+			if (statistics != null)
+			{
+				String header = "orid\tnass\tndef\tnIter\tnFunc\tpredictionTime\tcalculationTime";
+				String p = properties.getProperty("printStatistics");
+				if (p.equalsIgnoreCase("true"))
+				{
+					System.out.println(header);
+					for (List<Statistics> list : statistics.values())
+						for (Statistics s : list)
+							System.out.println(s);
+				}
+				else
+				{
+					FileWriter output = new FileWriter(p);
+					output.write(header+"\n");
+					for (List<Statistics> list : statistics.values())
+						for (Statistics s : list)
+							output.write(s.toString()+"\n");
+					output.close();
+					
+				}
+			}
+					
+			
 			System.exit(0);
 		} 
 		catch (Exception e)
@@ -484,7 +519,19 @@ public class LocOO
 					for (ParallelResult r : results) 
 					{
 						result = (LocOOTaskResult)r;
-
+						
+						if (statistics != null)
+							for (LocOOResult lr : result.getResults())
+								if (lr != null && lr.getOriginRow() != null)
+								{
+									// TODO
+									Statistics s = new Statistics(lr);
+									List<Statistics> list = statistics.get(s.orid);
+									if (list == null)
+										statistics.put(s.orid, list=new ArrayList<>());
+									list.add(s);
+								}
+						
 						try 
 						{
 							// write the result to output db or files.
@@ -699,6 +746,33 @@ public class LocOO
 			System.exit(1);
 		}
 
+	}
+	
+	class Statistics
+	{
+		long orid;
+		long nass;
+		long ndef;
+		int nIterations;
+		int nFunc;
+		double calcTime;
+		double predictionTime;
+		
+		public Statistics(LocOOResult r) {
+			this.orid = r.getOriginRow().getOrid();
+			this.nass = r.getOriginRow().getNass();
+			this.ndef = r.getOriginRow().getNdef();
+			this.nIterations = r.getnIterations();
+			this.nFunc = r.getnFunc();
+			this.calcTime = r.getCalculationTime();
+			this.predictionTime = r.getPredictionTime();
+		}
+		
+		@Override
+		public String toString() {
+			return String.format("%d\t%d\t%d\t%d\t%d\t%1.6f\t%1.6f", 
+					orid, nass, ndef, nIterations, nFunc, predictionTime,calcTime);
+		}
 	}
 	
 }

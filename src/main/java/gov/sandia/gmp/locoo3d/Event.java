@@ -221,7 +221,14 @@ public class Event extends Source implements BrentsFunction
 	// The convergence value in the current iteration.  This is
 	// abs(new_sswr/old_sswr - 1).
 
-	int nSSWR = 0;
+	// number of times sum squared weighted residuals are computed
+	private int nSSWR = 0;
+	
+	/**
+	 * Amount of time in nanoseconds spent computing predictions in 
+	 * method update
+	 */
+	private long predictionTime;
 
 	private boolean[] fixed;
 	
@@ -794,6 +801,8 @@ public class Event extends Source implements BrentsFunction
 	//
 	void update() throws GMPException, LocOOException
 	{
+		long timer = System.nanoTime();
+		
 		if (!positionUpToDate)
 		{
 			// Event is derived from GeoVector.Location.Source.  Event stores a copy of 
@@ -961,14 +970,14 @@ public class Event extends Source implements BrentsFunction
 		for (int i = 0; i < definingVec.size(); i++)
 			sumSqrWeightedResiduals += definingVec.get(i).getWeightedResidual()*
 			definingVec.get(i).getWeightedResidual();
-
-		++nSSWR; // increment the counter that keeps track of how many times
-		// sswr is computed.
-
-		//System.out.printf("nSSWR = %d  sswr = %10.0f%n", nSSWR, sumSqrWeightedResiduals);
+		
+		// increment the counter that keeps track of how many times sswr is computed.
+		++nSSWR; 
 
 		positionUpToDate = true;
 		originTimeUpToDate = true;
+		
+		predictionTime += System.nanoTime()-timer;
 	}
 
 	// **** _FUNCTION DESCRIPTION_
@@ -2886,4 +2895,22 @@ public class Event extends Source implements BrentsFunction
 	{
 		return events.getSeismicityDepthRange(getUnitVector())[fixedDepthIndex];
 	}
+	/**
+	 * Number of times sum squared weighted residuals are compute.
+	 * Value is updated in method update().
+	 * @return
+	 */
+	public int getnSSWR() {
+		return nSSWR;
+	}
+
+	/**
+	 * Amount of time in seconds spent computing sum squared weighted resiudals.
+	 * Value is updated in method update().
+	 * @return
+	 */
+	public double getPredictionTime() {
+		return predictionTime*1e-9;
+	}
+
 }

@@ -78,6 +78,23 @@ public class LocOOResult implements Serializable
 	 * be true, which is the default.
 	 */
 	private HashMap<Long, double[]> weightedResiduals;
+	
+	/**
+	 * number of sswr function evaluations performed.
+	 */
+	private int nFunc;
+	
+	/** 
+	 * number of iterations performed
+	 */
+	private int nIterations;
+	
+	/**
+	 * Time in seconds to compute location
+	 */
+	private double calculationTime;
+	
+	private double predictionTime;
 
 	/**
 	 * true if a valid location was computed.
@@ -99,6 +116,11 @@ public class LocOOResult implements Serializable
 			
 			LocatorResults lr = event.getLocatorResults();
 			
+			nFunc = lr.getNFunc();
+			nIterations = lr.getNIterations();
+			calculationTime = event.getCalculationTime();
+			predictionTime = event.getPredictionTime();
+			
 			valid = lr != null && lr.getConverged() && lr.getLocation() != null;
 			
 			if (valid)
@@ -106,7 +128,7 @@ public class LocOOResult implements Serializable
 				if (tableTypes.contains(DBTableTypes.ORIGIN))
 				{
 					originRow = new OriginExtended(lr.getOriginRow());
-
+					
 					if(tableTypes.contains(DBTableTypes.ORIGERR))
 						originRow.setOrigerr(lr.getOrigerrRow());
 
@@ -270,6 +292,22 @@ public class LocOOResult implements Serializable
 	public HashMap<Long, double[]> getWeightedResiduals() 
 	{
 		return weightedResiduals;
+	}
+
+	public int getnFunc() {
+		return nFunc;
+	}
+
+	public int getnIterations() {
+		return nIterations;
+	}
+
+	public double getCalculationTime() {
+		return calculationTime;
+	}
+
+	public double getPredictionTime() {
+		return predictionTime;
 	}
 
 }
